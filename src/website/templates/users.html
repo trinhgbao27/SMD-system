@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Quản lý Users{% endblock %}
+{% block content %}
+<h1>Quản lý & Phân quyền Người dùng</h1>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Họ tên</th>
+            <th>Email</th>
+            <th>Role hiện tại</th>
+            <th>Phân quyền mới</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.user_id }}</td>
+            <td>{{ user.full_name }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.role }}</td>
+            <td>
+                <select class="role-select" data-user-id="{{ user.user_id }}">
+                    <option value="user" {% if user.role == 'user' %}selected{% endif %}>User</option>
+                    <option value="teacher" {% if user.role == 'teacher' %}selected{% endif %}>Teacher</option>
+                    <option value="faculty_manager" {% if user.role == 'faculty_manager' %}selected{% endif %}>Faculty Manager</option>
+                    <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Admin</option>
+                </select>
+                <button onclick="updateRole('{{ user.user_id }}')">Cập nhật</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+function updateRole(userId) {
+    const select = document.querySelector(`select[data-user-id="${userId}"]`);
+    const newRole = select.value;
+    fetch(`/users/update-role/${userId}`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({role: newRole})
+    }).then(res => res.json())
+      .then(data => alert(data.message))
+      .catch(err => alert('Lỗi: ' + err));
+}
+</script>
+{% endblock %}
