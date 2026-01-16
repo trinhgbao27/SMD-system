@@ -22,7 +22,7 @@ def login():
             if user:
                 login_user(user)
                 flash('Đăng nhập thành công!', category='success')
-                return redirect(url_for('views.home'))
+                return redirect(url_for('views.admin'))
             else:
                 flash('Dữ liệu người dùng không tồn tại!', category='error')
         else:

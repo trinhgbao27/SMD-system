@@ -8,10 +8,16 @@ views = Blueprint('views', __name__)
 def home():
     return render_template('home.html')
 
-@views.route('/dashboard')
+@views.route('/student')
 @login_required
-def dashboard():
+def student():
     response = supabase.from_('user').select('*').execute()
     users = response.data or []
-    return render_template('dashboard.html', users=users)
+    return render_template('student.html', users=users)
 
+@views.route('/admin')
+@login_required
+def admin():
+    response = supabase.from_('user').select('*').execute()
+    users = response.data or []
+    return render_template('admin.html', users=users)
