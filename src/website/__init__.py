@@ -1,7 +1,8 @@
 from urllib import response
 from flask import Flask
 from flask_login import LoginManager
-
+import os
+from website.model.model_users import User
 
 from dotenv import load_dotenv
 import os
@@ -9,6 +10,7 @@ import os
 load_dotenv()
 
 def create_app():
+    
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'hjhjhjhj'
     app.config['SUPABASE_URL'] = os.getenv('SUPABASE_URL')
@@ -20,23 +22,24 @@ def create_app():
 
     @login_manager.user_loader
     def load_user(user_id):
-        from website.model.model_users import User
-        return User.get(user_id)
+        
+        user = User.get(user_id)
+        return user
     
 #ket noi supabase va debug ket noi
     from data.supa import supabase
-    try:
-        response = supabase.from_('user').select('*', count=True).execute()
-        print("Supabase test query:", response)
-    except Exception as e:
-        print("Supabase connect error:", str(e))
+    print("Supabase connected:", supabase is not None)
 
     from .auth import auth
     from .views import views
     from controllers.user_controller import user_controller
+
+#import cac cau truc du lieu tu model
+    from .model import notifications
+
     #dang ky blueprint
     app.register_blueprint(auth, url_prefix='/')
     app.register_blueprint(views, url_prefix='/')
-    app.register_blueprint(user_controller, url_prefix='/')
+    app.register_blueprint(user_controller, url_prefix='/student')
 
     return app

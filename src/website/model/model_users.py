@@ -2,8 +2,8 @@ from data.supa import supabase
 from flask_login import UserMixin
 
 class User(UserMixin):
-    def __init__(self, user_id, username, email, phone=None, status='active', faculty_id=None,created_at=None, updated_at=None,role='user'):
-        self.id = user_id
+    def __init__(self, user_id, username, email, phone=None, status='active', faculty_id=None,created_at=None, updated_at=None,role='student', notifications=None):
+        self.id = user_id(primary_key = True)
         self.username = username
         self.email = email
         self.phone = phone
@@ -12,6 +12,8 @@ class User(UserMixin):
         self.created_at = created_at
         self.updated_at = updated_at
         self.role = role
+        self.noti = notifications.relationship ('Notifications')
+
 
     @staticmethod
     def get(user_id):

@@ -16,7 +16,7 @@ def admin_required(f):
     return decorated
 
 # Route list users (admin only)
-@user_controller.route('/', methods=['GET'])
+@user_controller.route('/student', methods=['GET'])
 @admin_required
 def list_users():
     response = supabase.from_('user').select('*').execute()
