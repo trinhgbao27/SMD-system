@@ -1,49 +1,50 @@
 {% extends "base.html" %}
 {% block title %}Quản lý Users{% endblock %}
 {% block content %}
-<h1>Quản lý & Phân quyền Người dùng</h1>
-<table class="table table-striped">
-    <thead>
+<h1>Quản Lý Người Dùng</h1>
+<p> Xin chào Admin</p>
+<h3>    Danh sách người dùng</h3>
+{% if users %}
+    <table border="1" cellpadding="10" style="width:100%; border-collapse: collapse;">
+      <thead>
         <tr>
-            <th>ID</th>
-            <th>Họ tên</th>
-            <th>Email</th>
-            <th>Role hiện tại</th>
-            <th>Phân quyền mới</th>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Role hiện tại</th>
+          <th>Phone</th>
+          <th>Status</th>
+          <th>Thao tác</th>
         </tr>
-    </thead>
-    <tbody>
+      </thead>
+      <tbody>
         {% for user in users %}
-        <tr>
-            <td>{{ user.user_id }}</td>
-            <td>{{ user.full_name }}</td>
+          <tr>
+            <td>{{ user.username or 'N/A' }}</td>
             <td>{{ user.email }}</td>
-            <td>{{ user.role }}</td>
+            <td>{{ user.role | capitalize }}</td>
+            <td>{{ user.phone or 'N/A' }}</td>
+            <td>{{ user.status }}</td>
             <td>
-                <select class="role-select" data-user-id="{{ user.user_id }}">
-                    <option value="user" {% if user.role == 'user' %}selected{% endif %}>User</option>
-                    <option value="teacher" {% if user.role == 'teacher' %}selected{% endif %}>Teacher</option>
-                    <option value="faculty_manager" {% if user.role == 'faculty_manager' %}selected{% endif %}>Faculty Manager</option>
-                    <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Admin</option>
+              <form action="{{ url_for('views.update_role') }}" method="POST" style="display:inline;">
+            
+                <input type="hidden" name="user_id" value="{{ user.user_id }}">
+                <select name="role">
+                  <option value="student" {% if user.role == 'student' %}selected{% endif %}>Student</option>
+                  <option value="lecturer" {% if user.role == 'lecturer' %}selected{% endif %}>Lecturer</option>
+                  <option value="hod" {% if user.role == 'hod' %}selected{% endif %}>HOD</option>
+                  <option value="rector" {% if user.role == 'rector' %}selected{% endif %}>Rector</option>
                 </select>
-                <button onclick="updateRole('{{ user.user_id }}')">Cập nhật</button>
+                <button type="submit">Cập nhật</button>
+              </form>
             </td>
-        </tr>
+          </tr>
         {% endfor %}
-    </tbody>
-</table>
-
-<script>
-function updateRole(userId) {
-    const select = document.querySelector(`select[data-user-id="${userId}"]`);
-    const newRole = select.value;
-    fetch(`/users/update-role/${userId}`, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({role: newRole})
-    }).then(res => res.json())
-      .then(data => alert(data.message))
-      .catch(err => alert('Lỗi: ' + err));
-}
-</script>
+      </tbody>
+    </table>
+  {% else %}
+    <p>Chưa có người dùng nào khác ngoài admin.</p>
+  {% endif %}
+  
+  <br>
+  <a href="{{ url_for('auth.logout') }}">Đăng xuất</a>
 {% endblock %}

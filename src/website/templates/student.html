@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Dashboard{% endblock %}
 {% block content %}
-<h1>Dashboard - Danh sách người dùng (chỉ admin thấy full)</h1>
+<h1>STUDENT DASHBOARD</h1>
 <table class="table table-striped">
     <thead>
         <tr>
@@ -32,7 +32,3 @@
         {% endfor %}
     </tbody>
 </table>
-{% if current_user.role == 'admin' %}
-<a href="/users" class="btn btn-danger">Quản lý & Phân quyền Users</a>
-{% endif %}
-{% endblock %}

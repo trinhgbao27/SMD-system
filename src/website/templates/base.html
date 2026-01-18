@@ -27,6 +27,7 @@
             </div>
         </nav>
 
+                
 
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -57,5 +58,6 @@
          type = "text/javascript"
          src = "{{ url_for('static', filename='js/main.js') }}">
         </script>
+        
     </body>
 </html>

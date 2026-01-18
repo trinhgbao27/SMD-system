@@ -21,7 +21,7 @@ class Authservice:
                 if auth_response.user:
                     # Lưu vào bảng public.user với role mặc định 'student'
                     supabase.from_('user').insert({
-                        "user_id": auth_response.user.id,
+                        "user_id": str(auth_response.user.id),
                         "username": username,
                         "email": email,
                         "phone": phone,
@@ -34,15 +34,51 @@ class Authservice:
         except Exception as e:
                 return {"success": False, "message": str(e)}
     
-    
+
+
+
+
+
     def login(self, email, password):
         try:
             response = supabase.auth.sign_in_with_password({"email": email, "password": password})
             if response.user:
-                return {"success": True, "user_id": response.user.id}
+                user_id = str(response.user.id)
+                # lấy thông tin ở trong bảng user
+                user_data = supabase.table('user')\
+                .select('user_id', 'username', 'email', 'status', 'role')\
+                .eq('user_id', user_id)\
+                .single()\
+                .execute()
+
+                # check xem có data hay không có
+                if user_data.data:
+                     role = user_data.data['role']
+                     username = user_data.data['username']
+                     status = user_data.data['status']
+                     if status != 'active':
+                        flash('Tài khoản của bạn không hoạt động. Vui lòng liên hệ quản trị viên.', category='error')
+                        return {"success": False, "message": "Tài khoản không hoạt động."}
+                     return {   #trả về thông tin user
+                            'success': True,
+                            'user_id': user_id,
+                            'username': username,
+                            'role': role,
+                            'email': email
+                    }
             else:
-                return {"error": "Sai email hoặc mật khẩu."}
+                 flash('Email hoặc mật khẩu không đúng.', category='error')
+                     
         except Exception as e:
             return {"error": str(e)}
 
+
+
+def get_user_info(self, user_id):
+     response = supabase.table('user')\
+            .select('user_id, username, email, role, phone, status')\
+            .eq('user_id', user_id)\
+            .single()\
+            .execute()
+     return response.data if response.data else None
     

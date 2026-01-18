@@ -18,11 +18,32 @@ def login():
         result = auth_service.login(email, password)
 
         if result.get('success'):
+            # tạo đối tượng  user
             user = User.get(result['user_id'])
+
+
+            user_id = result.get('user_id')
+            role = result.get('role')
+            username = result.get('username')
             if user:
                 login_user(user)
                 flash('Đăng nhập thành công!', category='success')
-                return redirect(url_for('views.admin'))
+
+
+                # chuyển hướng đến trang dựa trên vai trò của người dùng
+                if role == 'student':
+                    return redirect(url_for('views.student'))
+                elif role == 'aa':
+                    return redirect(url_for('views.academic'))
+                
+                elif role in ['hod', 'rector']:
+                    return redirect(url_for('views.approval'))
+                
+                elif role == 'lecturer':
+                    return redirect(url_for('views.lecturer'))
+                
+                else:
+                    return redirect(url_for('views.admin'))
             else:
                 flash('Dữ liệu người dùng không tồn tại!', category='error')
         else:

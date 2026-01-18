@@ -4,12 +4,14 @@ from flask_login import LoginManager
 import os
 from object.entities.model_users import User
 
+
 from dotenv import load_dotenv
 import os
 
 load_dotenv()
 
 def create_app():
+    
     
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'hjhjhjhj'
@@ -32,7 +34,6 @@ def create_app():
 
     from .auth import auth
     from .views import views
-    from controllers.user_controller import user_controller
 
 #import cac cau truc du lieu tu model
     
@@ -40,6 +41,5 @@ def create_app():
     #dang ky blueprint
     app.register_blueprint(auth, url_prefix='/')
     app.register_blueprint(views, url_prefix='/')
-    app.register_blueprint(user_controller, url_prefix='/student')
 
     return app
