@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for,request, flash
 from flask_login import login_required, current_user
 from data.supa import supabase
 from middleware.role_required import role_required
-from controllers.admin_control import updated_user_role, created_new_user, toggle_user_status
+from controllers.admin_control import updated_user_role, created_new_user, toggle_user_status, admin_publish_management
 
 views = Blueprint('views', __name__)
 
@@ -76,7 +76,19 @@ def create_user():
     return render_template('_admin/create_user.html', current_user=current_user)
 
 
+@views.route('/admin/publish_a', methods = ['GET','POST'])
+@login_required
+@role_required('admin')
+def publish_a():
+    if request.method == 'POST':
+        syllabus_id = request.form.get('syllabus_id')
+        action = request.form.get('action')
 
+        admin_publish_management(syllabus_id, action)
+        return redirect(url_for('views.publish_a'))
+
+    pending_list = supabase.table('syllabus').select('*').eq('status', 'pending').execute().data
+    return render_template('_admin/publish_a.html', documents=pending_list, user=current_user)
 
 
 

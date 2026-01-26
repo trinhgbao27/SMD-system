@@ -1,0 +1,53 @@
+{% extends "des.html" %}
+{% block content %}
+<style>
+  body {
+        background-color: rgba(119, 226, 248, 0.4);
+        
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
+</style>
+<div class="table-container">
+    <h3><i class="fa-solid fa-file-export"></i> Phê duyệt xuất bản giáo trình</h3>
+    
+    <table class="custom-table">
+        <thead>
+            <tr>
+                <th>Tên giáo trình</th>
+                <th>Giảng viên</th>
+                <th>Trạng thái</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for doc in documents %}
+            <tr>
+                <td><strong>{{ doc.title }}</strong></td>
+                <td>{{ doc.author_name }}</td>
+                <td><span class="badge" style="background: #fff3cd; color: #856404;">Đang chờ duyệt</span></td>
+                <td>
+                    <form action="" method="POST" style="display:inline;">
+                        <input type="hidden" name="syllabus_id" value="{{ doc.id }}">
+                        <input type="hidden" name="action" value="approved">
+                        <button type="submit" class="btn-update" style="background: #2ecc71;">
+                            <i class="fa-solid fa-check"></i> Duyệt
+                        </button>
+                    </form>
+
+                    <form action="" method="POST" style="display:inline; margin-left: 5px;">
+                        <input type="hidden" name="syllabus_id" value="{{ doc.id }}">
+                        <input type="hidden" name="action" value="rejected">
+                        <button type="submit" style="background: #e74c3c; color: white; border:none; padding: 8px 15px; border-radius: 5px; cursor:pointer;">
+                            <i class="fa-solid fa-xmark"></i> Từ chối
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

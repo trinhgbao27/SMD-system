@@ -71,6 +71,28 @@ def toggle_user_status(user_id):
         supabase.table('user').update({'status': new_status}).eq('user_id', user_id).execute()
         
         flash(f"Đã {'khóa' if new_status == 'locked' else 'mở khóa'} tài khoản thành công!", category='success')
-    
 
+
+
+def system_config(stem):
+      pass
+
+
+
+def admin_publish_management(syllabus_id, new_status):
+    try:
+        syllabus_id = int(syllabus_id)
+        data = {
+              "status"  : new_status,
+              "published_at": "now()" if "new_status" == 'approved' else None
+          }
+
+        supabase.table('syllabus').update(data).eq('syl_id', syllabus_id).execute()
+
+        msg = "Đã phê duyệt giáo trình!" if new_status == "approved" else " Đã từ chối giáo trình."
+        flash(msg, category='success' if new_status == "approved" else 'warning')
+        return True
+    except Exception as e:
+        flash(f"Lỗi hệ thống: {str(e)}", category='error')
+        return False
 
