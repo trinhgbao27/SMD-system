@@ -4,6 +4,7 @@ from flask_login import LoginManager, current_user
 import os
 from _object.entities.model_users import User
 from services.notification_ser import NotificationService
+from infrastructure.ai.ai_controller import ai_bp
 
 
 from dotenv import load_dotenv
@@ -42,6 +43,8 @@ def create_app():
     #dang ky blueprint
     app.register_blueprint(auth, url_prefix='/')
     app.register_blueprint(views, url_prefix='/')
+    app.register_blueprint(ai_bp, url_prefix='/ai')
+
 
     @app.context_processor
     def inject_notifications():

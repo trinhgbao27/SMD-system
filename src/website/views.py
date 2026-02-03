@@ -4,9 +4,10 @@ from data.supa import supabase
 from middleware.role_required import role_required
 from controllers.admin_control import system_config_up, updated_user_role, created_new_user, toggle_user_status, admin_publish_management
 from services.notification_ser import NotificationService
-
+from infrastructure.ai.ai_service import AIService
 
 views = Blueprint('views', __name__)
+
 
 #HOME
 @views.route('/')
@@ -168,3 +169,8 @@ def all_notifications():
     # lấy thông báo 
     notifications = NotificationService.get_personal_notifications(current_user.id)
     return render_template('notifications_all.html', notifications=notifications, user=current_user)
+
+
+
+
+
