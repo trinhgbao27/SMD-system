@@ -129,6 +129,7 @@ def lecturer():
 
 
 
+
 #ACADEMIC AFFAIRS
 @views.route('/academic')
 @login_required
@@ -137,10 +138,55 @@ def academic():
     users = response.data or []
     return render_template('academic.html', users=users)
 
+@views.route('/academic/pending')
+@login_required
+def academic_pending():
+    # danh sách syllabus giả
+    fake_documents = [
+        {"title": "Syllabus Lập trình C", "status": "pending"},
+        {"title": "Syllabus CSDL", "status": "pending"},
+    ]
+    return render_template(
+        "academic_pending.html",
+        documents=fake_documents
+    )
 
 
+@views.route("/academic/analysis", methods=["GET", "POST"])
+@login_required
+def academic_analysis():
+    fake_syllabi = [
+        {"syl_id": "SYL001", "course_name": "CSDL", "version": "v1"},
+        {"syl_id": "SYL002", "course_name": "Lập trình", "version": "v2"},
+    ]
+
+    result = None
+    if request.method == "POST":
+        result = "So sánh phiên bản giả lập — KHÔNG dùng AI, chỉ demo giao diện."
+
+    return render_template(
+        "academic_analysis.html",
+        syllabi=fake_syllabi,
+        result=result
+    )
 
 
+@views.route("/academic/feedback", methods=["GET", "POST"])
+@login_required
+def academic_feedback():
+    if request.method == "POST":
+        flash("Gửi phản hồi thành công! (bản demo, chưa lưu DB)", "success")
+        return redirect(url_for("views.academic_feedback"))
+
+    fake_syllabi = [
+        {"syl_id": "SYL001", "course_name": "CSDL", "version": "v1"},
+        {"syl_id": "SYL002", "course_name": "Lập trình", "version": "v2"},
+    ]
+
+    return render_template(
+        "academic_feedback.html",
+        syllabi=fake_syllabi
+    )
 
 
 
@@ -151,6 +197,18 @@ def rector():
     response = supabase.from_('user').select('*').execute()
     users = response.data or []
     return render_template('rector.html', users=users)
+
+@views.route("/rector/review")
+def rector_review():
+    return render_template("rector_review.html")
+
+@views.route("/rector/publish")
+def rector_publish():
+    return render_template("rector_publish.html")
+
+@views.route("/rector/reports")
+def rector_reports():
+    return render_template("rector_reports.html")
 
 
 #rector
